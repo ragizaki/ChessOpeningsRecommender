@@ -1,44 +1,27 @@
-import { useState, useEffect } from "react";
-import "./App.css";
+import { useState } from "react";
+import OpeningsList from "./components/OpeningsList";
+import Form from "./components/Form";
 
-function App() {
-  const [chessUsername, setChessUsername] = useState<string>("");
-  const [chessData, setChessData] = useState(null);
+export interface OpeningInfo extends Array<string> {
+  0: string; // name
+  1: string; // moves
+}
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (chessUsername === "") {
-      alert("Please enter a chess.com username");
-      return;
-    }
-    const res = await fetch(
-      `http://127.0.0.1:8000/api/recommend/${chessUsername}`,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    const data = await res.json();
-    console.log(data);
-    setChessUsername("");
-  };
+export interface RecommendedOpenings {
+  [ecoCategory: string]: OpeningInfo[];
+}
+
+export default function App() {
+  const [openings, setOpenings] = useState<RecommendedOpenings | null>(null);
 
   return (
-    <div className="app">
-      <h1>Chess Openings Recommender</h1>
-      <form onSubmit={handleSubmit} className="form-container">
-        <div className="input-container">
-          <label htmlFor="username-input">Chess.com Username:</label>
-          <input
-            id="username-input"
-            type="text"
-            value={chessUsername}
-            onChange={(e) => setChessUsername(e.target.value)}
-          />
+    <div className="grid grid-cols-1 md:grid-cols-3 p-10">
+      <Form setOpenings={setOpenings} />
+      {openings && (
+        <div className="md:col-span-2">
+          <OpeningsList openings={openings} />
         </div>
-        <input type="submit" value="Submit" id="submit-button" />
-      </form>
+      )}
     </div>
   );
 }
-
-export default App;
