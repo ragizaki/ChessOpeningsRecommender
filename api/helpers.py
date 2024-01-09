@@ -36,6 +36,6 @@ def create_df_from_headers(headers: list[dict[str, Any]], username: str) -> pd.D
         columns=["Event", "Site", "Date", "Round", "Timezone", "UTCDate", "UTCTime", "StartTime", "EndDate", "EndTime"]
     )
 
-    df["Result"] = df["Termination"].apply(lambda termination: termination.split(" ")[0] == username)
+    df["DidUserWin"] = df["Termination"].apply(lambda termination: termination.split(" ")[0] == username)
     df.drop(columns=["Termination"], inplace=True)
     return df

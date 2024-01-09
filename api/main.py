@@ -6,6 +6,7 @@ from chessdotcom import get_player_game_archives, Client, ChessDotComResponse
 import pandas as pd
 
 from helpers import create_df_from_headers, parse_games
+from recommendation import recommend_openings
 
 user_agent_header = "Chess.com Opening Recommender (username: ragizaki, contact: zakimachfj@gmail.com"
 
@@ -21,7 +22,7 @@ def index():
     return {"message": "This is working!"}
 
 @app.get("/api/recommend/{username}")
-def recommend_openings_for_player(username: str):
+def recommend_openings_for_player(username: str, num_recommendations: int = 5):
     archives: ChessDotComResponse = get_player_game_archives(username)
     recent_archives = archives.json["archives"][-5:] # 5 months of most recent games
     headers = []
@@ -35,5 +36,8 @@ def recommend_openings_for_player(username: str):
        
 
     games_df = create_df_from_headers(headers, username)
+    eco_df = pd.read_csv("../data/eco.csv")
+
+    openings = recommend_openings(games_df, eco_df, num_recommendations=num_recommendations)
                 
-    return {"username": username}
+    return openings
