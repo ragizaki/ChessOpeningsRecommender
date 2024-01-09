@@ -2,17 +2,22 @@ import { useState } from "react";
 import { RecommendedOpenings } from "../App";
 
 interface FormProps {
+  username: string;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
   setOpenings: React.Dispatch<React.SetStateAction<RecommendedOpenings | null>>;
 }
 
-export default function Form({ setOpenings }: FormProps) {
+export default function Form({
+  username,
+  setUsername,
+  setOpenings,
+}: FormProps) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [chessUsername, setChessUsername] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     setOpenings(null);
     e.preventDefault();
-    if (chessUsername === "") {
+    if (username === "") {
       alert("Please enter a chess.com username");
       return;
     }
@@ -20,9 +25,7 @@ export default function Form({ setOpenings }: FormProps) {
 
     try {
       const res = await fetch(
-        `${
-          import.meta.env.VITE_SERVER_BASE_URL
-        }/api/recommend/${chessUsername}`,
+        `${import.meta.env.VITE_SERVER_BASE_URL}/api/recommend/${username}`,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -34,7 +37,7 @@ export default function Form({ setOpenings }: FormProps) {
     }
 
     setLoading(false);
-    setChessUsername("");
+    setUsername("");
   };
 
   return (
@@ -53,8 +56,8 @@ export default function Form({ setOpenings }: FormProps) {
           <input
             id="username"
             placeholder="GMHikaru"
-            value={chessUsername}
-            onChange={(e) => setChessUsername(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full mt-1 rounkded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>

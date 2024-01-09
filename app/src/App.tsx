@@ -13,13 +13,18 @@ export interface RecommendedOpenings {
 
 export default function App() {
   const [openings, setOpenings] = useState<RecommendedOpenings | null>(null);
+  const [username, setUsername] = useState<string>("");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 p-10">
-      <Form setOpenings={setOpenings} />
+      <Form
+        username={username}
+        setUsername={setUsername}
+        setOpenings={setOpenings}
+      />
       {openings && (
         <div className="md:col-span-2">
-          <OpeningsList openings={openings} />
+          <OpeningsList username={username} openings={openings} />
         </div>
       )}
     </div>
