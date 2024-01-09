@@ -16,7 +16,9 @@ origins = ["http://localhost:5173", "https://api.chess.com"]
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-
+@app.get("/api")
+def index():
+    return {"message": "This is working!"}
 
 @app.get("/api/recommend/{username}")
 def recommend_openings_for_player(username: str):
